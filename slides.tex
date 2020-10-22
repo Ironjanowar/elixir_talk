@@ -28,92 +28,80 @@
   \tableofcontents
 \end{frame}
 
-\section{Actor Model and Process}
+\section{Actor Model}
 \begin{frame}
   \frametitle{Actor Model}
   \begin{itemize}
-    \item Each Actor is a process
-    \item Each process performs a specific task
-    \item To tell a process to do something, we need to send a message
-    \item Messages are pattern matched
-    \item Other than that, process do not share any other information
+  \item Each Actor is a process
+  \item Each process performs a specific task
+  \item To tell a process to do something, we need to send a message
+  \item Messages are pattern matched
+  \item Other than that, process do not share any other information
   \end{itemize}
   \begin{center}
     \textit{From: Benjamin Tan Wei Hao. “The Little Elixir \& OTP Guidebook MEAP v10”.}
   \end{center}
 \end{frame}
 
+\section{Processes}
 \begin{frame}[fragile]
   \frametitle{Spawn a process}
-  \begin{minted}{elixir}
+\begin{minted}{elixir}
     pid = spawn(fn -> 1 + 1 end)
-  \end{minted}
+\end{minted}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Spawn 100 processes}
-  \begin{minted}{elixir}
+\begin{minted}{elixir}
     Enum.each(1..100, fn _ ->
       spawn(fn -> 1 + 1 end)
     end)
-  \end{minted}
+\end{minted}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Receive messages}
-  \begin{minted}{elixir}
+\begin{minted}{elixir}
     receive do
       {:pattern, n} -> IO.puts("The number is #{n}")
       _ -> IO.puts("Discarded message")
     end
-  \end{minted}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Send a message}
+\begin{minted}{elixir}
+     send(pid, message)
+
+     send(pid, {:sum, a, b, self()})
+\end{minted}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Receive messages}
-  \begin{minted}{elixir}
+\begin{minted}{elixir}
     pid = spawn(fn ->
       receive do
         {:sum, a, b, pid} -> send(pid, {:result, a + b})
         _ -> IO.puts("Discarded message")
       end
     end)
-  \end{minted}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Send a message}
-  \begin{minted}{elixir}
-     send(pid, message)
-
-     send(pid, {:sum, a, b, self()})
-  \end{minted}
+\end{minted}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Mantain a state with recursion}
-  \begin{minted}{elixir}
-  def loop(n) do
-    receive do
-      {:add, a} ->
-        loop(n + a)
-
-      :show_state ->
-        IO.puts("The current state is #{n}")
-        loop(n)
-
-      _ ->
-        IO.puts("Unrecognized error")
-        loop(n)
-    end
-  end
-  \end{minted}
+  \begin{center}
+    \textit{Demo time}
+  \end{center}
 \end{frame}
 
 \section{OTP}
- \begin{frame}[fragile]
+\begin{frame}[fragile]
   \frametitle{GenServer}
-  \begin{minted}{elixir}
+\begin{minted}{elixir}
 defmodule Module do
   use GenServer
 
@@ -127,7 +115,38 @@ defmodule Module do
     {:ok, state}
   end
 end
-  \end{minted}
+\end{minted}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GenServer}
+  There are two types of messages for a GenServer:
+  \begin{itemize}
+  \item Cast: asynchronous
+  \item Call: synchronous
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GenServer}
+  \begin{center}
+    \textit{Demo Time}
+  \end{center}
+\end{frame}
+
+\section{Sneak peek at Supervisors}
+\begin{frame}
+  \frametitle{Supervisors}
+  \begin{center}
+    Supervisors are processes that \textit{supervise} other processes
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Supervisors}
+  \begin{center}
+    \textit{Demo time}
+  \end{center}
 \end{frame}
 
 \begin{frame}
@@ -139,7 +158,7 @@ end
 
 \end{document}
 
- %%% Local Variables:
- %%% mode: LaTeX
- %%% LaTeX-command: "latex -shell-escape"
- %%% End:
+%%% Local Variables:
+%%% mode: LaTeX
+%%% LaTeX-command: "latex -shell-escape"
+%%% End:
