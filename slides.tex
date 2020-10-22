@@ -1,0 +1,145 @@
+\documentclass{beamer}
+
+\usepackage[english,spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+\usepackage{minted}
+\usemintedstyle{emacs}
+
+\usetheme{Berlin}
+
+\setbeamertemplate{page number in head/foot}[framenumber]
+\setbeamertemplate{navigation symbols}{}
+
+% Information to be included in the title page:
+\title{Elixir, La Turra II}
+\author{César Guzmán Alpízar}
+\institute{Vipera Ibérica}
+\date{Octubre de 2020}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Index}
+  \tableofcontents
+\end{frame}
+
+\section{Actor Model and Process}
+\begin{frame}
+  \frametitle{Actor Model}
+  \begin{itemize}
+    \item Each Actor is a process
+    \item Each process performs a specific task
+    \item To tell a process to do something, we need to send a message
+    \item Messages are pattern matched
+    \item Other than that, process do not share any other information
+  \end{itemize}
+  \begin{center}
+    \textit{From: Benjamin Tan Wei Hao. “The Little Elixir \& OTP Guidebook MEAP v10”.}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Spawn a process}
+  \begin{minted}{elixir}
+    pid = spawn(fn -> 1 + 1 end)
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Spawn 100 processes}
+  \begin{minted}{elixir}
+    Enum.each(1..100, fn _ ->
+      spawn(fn -> 1 + 1 end)
+    end)
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Receive messages}
+  \begin{minted}{elixir}
+    receive do
+      {:pattern, n} -> IO.puts("The number is #{n}")
+      _ -> IO.puts("Discarded message")
+    end
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Receive messages}
+  \begin{minted}{elixir}
+    pid = spawn(fn ->
+      receive do
+        {:sum, a, b, pid} -> send(pid, {:result, a + b})
+        _ -> IO.puts("Discarded message")
+      end
+    end)
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Send a message}
+  \begin{minted}{elixir}
+     send(pid, message)
+
+     send(pid, {:sum, a, b, self()})
+  \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Mantain a state with recursion}
+  \begin{minted}{elixir}
+  def loop(n) do
+    receive do
+      {:add, a} ->
+        loop(n + a)
+
+      :show_state ->
+        IO.puts("The current state is #{n}")
+        loop(n)
+
+      _ ->
+        IO.puts("Unrecognized error")
+        loop(n)
+    end
+  end
+  \end{minted}
+\end{frame}
+
+\section{OTP}
+ \begin{frame}[fragile]
+  \frametitle{GenServer}
+  \begin{minted}{elixir}
+defmodule Module do
+  use GenServer
+
+  # Client API
+  def start_link(default) do
+    GenServer.start_link(__MODULE__, default)
+  end
+
+  # Server callbacks
+  def init(state) do
+    {:ok, state}
+  end
+end
+  \end{minted}
+\end{frame}
+
+\begin{frame}
+  \centering
+  \Large{Thanks a lot!}\\
+  \hspace{0pt} \\
+  \Large{Questions?}
+\end{frame}
+
+\end{document}
+
+ %%% Local Variables:
+ %%% mode: LaTeX
+ %%% LaTeX-command: "latex -shell-escape"
+ %%% End:

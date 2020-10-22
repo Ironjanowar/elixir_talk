@@ -1,0 +1,35 @@
+* Table Of Contents
+
+- Actor Model and process
+- Creating a process, sending and receiving messages
+- OTP and behaviours
+- GenServers
+- Quick look to Supervisors
+
+* Actor Model and process
+1. Each actor is a process.
+2. Each process performs a specific task.
+3. To tell a process to do something, you need to send it a
+   message. The process can also reply by sending back another
+   message.
+4. Messages are pattern matched
+5. Other than that, processes do not share any information with other
+   processes.
+
+From: Benjamin Tan Wei Hao. “The Little Elixir & OTP Guidebook MEAP v10”.
+
+* Creating a process, sending and receiving messages
+- spawn function
+- receive macro in a module
+- send function
+- Ping Pong example
+
+* OTP and behaviours
+- OTP is a framework for concurrent programming development
+- OTP behaviours are design patterns for processes
+
+* GenServers
+- GenServer structure
+- Ping Pong with GenServers
+
+* Quick look to Supervisors
